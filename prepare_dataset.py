@@ -42,6 +42,7 @@ def gather_all_code(directory, output_file):
 
 if __name__ == "__main__":
     # المسار الذي يحتوي على كل مشاريعك وأكوادك
-    target_directory = "h:\\HAY-AI-PRO" 
-    output = "h:\\HAY-AI-PRO\\training_data.txt"
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    target_directory = current_dir 
+    output = os.path.join(current_dir, "training_data.txt")
     gather_all_code(target_directory, output)

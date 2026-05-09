@@ -19,7 +19,8 @@ n_layer = 8          # 8 طبقات من التفكير العميق جداً
 # 2. بيانات التدريب (أكوادك الخاصة)
 # ==========================================
 # بدلاً من النص الثابت، سنقرأ الأكواد من ملف خارجي
-data_file = 'h:\\HAY-AI-PRO\\training_data.txt'
+base_dir = os.path.dirname(os.path.abspath(__file__))
+data_file = os.path.join(base_dir, 'training_data.txt')
 
 try:
     # إنشاء الملف إن لم يكن موجوداً
@@ -161,7 +162,7 @@ if __name__ == "__main__":
     model = MyCustomGPT().to(device)
     
     # التحقق من وجود عقل سابق لإكمال التدريب (Train More)
-    brain_path = 'h:\\HAY-AI-PRO\\my_own_brain.pth'
+    brain_path = os.path.join(base_dir, 'my_own_brain.pth')
     if os.path.exists(brain_path):
         try:
             model.load_state_dict(torch.load(brain_path, map_location=device, weights_only=True))
@@ -186,7 +187,7 @@ if __name__ == "__main__":
             
         # حفظ العقل بشكل دوري كل 500 جولة حتى لا يضيع تعبه
         if iter_count > 0 and iter_count % 500 == 0:
-            torch.save(model.state_dict(), 'h:\\HAY-AI-PRO\\my_own_brain.pth')
+            torch.save(model.state_dict(), brain_path)
             print("💾 تم حفظ خبرات العقل! مستمر في المذاكرة والتدريب...")
             
         iter_count += 1

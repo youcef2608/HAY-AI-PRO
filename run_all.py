@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import os
 
 def run_script(script_name, description):
     print(f"\n{'='*40}")
@@ -7,7 +8,8 @@ def run_script(script_name, description):
     print(f"{'='*40}\n")
     
     try:
-        subprocess.run([sys.executable, f"h:\\HAY-AI-PRO\\{script_name}"], check=True)
+        script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), script_name)
+        subprocess.run([sys.executable, script_path], check=True)
     except subprocess.CalledProcessError:
         print(f"\n❌ حدث خطأ أثناء تشغيل {script_name}. يرجى التحقق من الأكواد.")
         sys.exit(1)

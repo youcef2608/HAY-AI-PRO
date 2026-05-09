@@ -4,9 +4,11 @@ from pydantic import BaseModel
 import torch
 import tiktoken
 import sys
+import os
 
 # استيراد هندسة العقل الخاص بك الذي صنعته من الصفر
-sys.path.append('h:\\HAY-AI-PRO')
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(current_dir)
 from my_custom_gpt import MyCustomGPT, device
 
 # 1. إعداد السيرفر المحلي
@@ -22,7 +24,8 @@ decode = lambda l: enc.decode(l)
 
 # تحميل الأوزان
 model = MyCustomGPT().to(device)
-model.load_state_dict(torch.load('h:\\HAY-AI-PRO\\my_own_brain.pth', map_location=device, weights_only=True))
+brain_path = os.path.join(current_dir, 'my_own_brain.pth')
+model.load_state_dict(torch.load(brain_path, map_location=device, weights_only=True))
 model.eval() # وضع الاختبار
 
 print("تم تحميل نموذجك الخاص بنجاح! السيرفر جاهز للربط مع VS Code 🚀")

@@ -7,7 +7,8 @@ from tkinter import scrolledtext, messagebox
 import threading
 
 # استيراد هندسة العقل وأدوات التشفير من ملفك الأصلي
-sys.path.append('h:\\HAY-AI-PRO')
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(current_dir)
 from my_custom_gpt import MyCustomGPT, encode, decode, device
 
 print("🚀 جاري إيقاظ العقل المجنون...")
