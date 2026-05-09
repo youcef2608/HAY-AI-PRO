@@ -15,16 +15,16 @@ command = [
     sys.executable, "-m", "PyInstaller", "--onefile", 
     "--copy-metadata", "tiktoken", 
     "--name", "Crazy_AI", 
-    "h:\\HAY-AI-PRO\\test_crazy_ai.py"
+    "test_crazy_ai.py"
 ]
 subprocess.run(command, check=True)
 
 print("\n📦 جاري تجهيز ملف الرفع (ZIP) لـ GitHub...")
-dist_dir = "h:\\HAY-AI-PRO\\dist"
+dist_dir = "dist"
 exe_path = os.path.join(dist_dir, "Crazy_AI.exe")
-brain_source = "h:\\HAY-AI-PRO\\my_own_brain.pth"
+brain_source = "my_own_brain.pth"
 brain_dest = os.path.join(dist_dir, "my_own_brain.pth")
-zip_path = "h:\\HAY-AI-PRO\\Crazy_AI_Release.zip"
+zip_path = "Crazy_AI_Release.zip"
 
 # نسخ العقل إلى مجلد dist ليكون بجانب البرنامج
 if os.path.exists(brain_source):
