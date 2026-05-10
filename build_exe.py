@@ -20,9 +20,9 @@ static_dir = os.path.join(base, "hay_ai", "static")
 
 command = [
     sys.executable, "-m", "PyInstaller",
+    "--noconsole",
     "--onefile",
     "--name", "HAY-AI-PRO",
-    "--icon", "NONE",
     "--add-data", f"{static_dir};hay_ai/static",
     "--hidden-import", "hay_ai",
     "--hidden-import", "hay_ai.config",
