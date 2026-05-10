@@ -1,0 +1,45 @@
+name: Build HAY-AI PRO
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build EXE
+        run: python build_exe.py
+
+      - name: Upload Release
+        uses: actions/upload-artifact@v4
+        with:
+          name: HAY-AI-PRO
+          path: |
+            dist/HAY-AI-PRO.exe
+            HAY-AI-PRO-Release.zip
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: HAY-AI-PRO-Release.zip
+          body: |
+            ## 🧠 HAY-AI PRO
+            مساعد البرمجة الذكي المحلي - يعمل 100% بدون إنترنت
+            
+            ### المتطلبات:
+            - تثبيت [Ollama](https://ollama.com/download)
+            - شغّل HAY-AI-PRO.exe وسيتكفل بالباقي!

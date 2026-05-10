@@ -1,0 +1,38 @@
+{
+  "name": "hay-ai-pro",
+  "displayName": "HAY-AI PRO",
+  "description": "مساعد البرمجة الذكي المحلي - يعمل بدون إنترنت",
+  "version": "1.0.0",
+  "publisher": "youcef",
+  "engines": {"vscode": "^1.80.0"},
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {"command": "hay-ai.chat", "title": "HAY-AI: دردشة"},
+      {"command": "hay-ai.explain", "title": "HAY-AI: اشرح الكود"},
+      {"command": "hay-ai.fix", "title": "HAY-AI: أصلح الكود"},
+      {"command": "hay-ai.review", "title": "HAY-AI: راجع الكود"},
+      {"command": "hay-ai.refactor", "title": "HAY-AI: حسّن الكود"}
+    ],
+    "menus": {
+      "editor/context": [
+        {"command": "hay-ai.explain", "group": "hay-ai"},
+        {"command": "hay-ai.fix", "group": "hay-ai"},
+        {"command": "hay-ai.review", "group": "hay-ai"},
+        {"command": "hay-ai.refactor", "group": "hay-ai"}
+      ]
+    },
+    "configuration": {
+      "title": "HAY-AI PRO",
+      "properties": {
+        "hay-ai.serverUrl": {
+          "type": "string",
+          "default": "http://127.0.0.1:1888",
+          "description": "عنوان خادم HAY-AI"
+        }
+      }
+    }
+  }
+}

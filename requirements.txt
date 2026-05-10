@@ -1,10 +1,4 @@
-gradio
-torch
-torchvision
-Pillow
 fastapi
-uvicorn
-tiktoken
-fpdf
-PyPDF2
-pyinstaller
+uvicorn[standard]
+httpx
+websockets

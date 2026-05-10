@@ -4,38 +4,56 @@ import os
 import shutil
 import zipfile
 
-print("🚀 جاري تجهيز الذكاء الاصطناعي كبرنامج تنفيذي (.exe)...")
+print("🚀 جاري بناء HAY-AI PRO كبرنامج تنفيذي (.exe)...")
+print()
 
-# 1. تثبيت أداة التحويل PyInstaller
+# 1. Install PyInstaller
 subprocess.run([sys.executable, "-m", "pip", "install", "pyinstaller"], check=True)
 
-# 2. تحويل البرنامج
-# ملاحظة: نستخدم --copy-metadata لتجنب مشاكل مكتبة tiktoken عند التجميع
+# 2. Build exe
+base = os.path.dirname(os.path.abspath(__file__))
+static_dir = os.path.join(base, "hay_ai", "static")
+
 command = [
-    sys.executable, "-m", "PyInstaller", "--onefile", 
-    "--copy-metadata", "tiktoken", 
-    "--name", "Crazy_AI", 
-    "test_crazy_ai.py"
+    sys.executable, "-m", "PyInstaller",
+    "--onefile",
+    "--name", "HAY-AI-PRO",
+    "--icon", "NONE",
+    "--add-data", f"{static_dir};hay_ai/static",
+    "--hidden-import", "hay_ai",
+    "--hidden-import", "hay_ai.config",
+    "--hidden-import", "hay_ai.providers",
+    "--hidden-import", "hay_ai.tools",
+    "--hidden-import", "hay_ai.agent",
+    "--hidden-import", "hay_ai.server",
+    "--hidden-import", "uvicorn.logging",
+    "--hidden-import", "uvicorn.loops",
+    "--hidden-import", "uvicorn.loops.auto",
+    "--hidden-import", "uvicorn.protocols",
+    "--hidden-import", "uvicorn.protocols.http",
+    "--hidden-import", "uvicorn.protocols.http.auto",
+    "--hidden-import", "uvicorn.protocols.websockets",
+    "--hidden-import", "uvicorn.protocols.websockets.auto",
+    "--hidden-import", "uvicorn.lifespan",
+    "--hidden-import", "uvicorn.lifespan.on",
+    "--hidden-import", "uvicorn.lifespan.off",
+    "--collect-submodules", "uvicorn",
+    "--collect-submodules", "fastapi",
+    "main.py"
 ]
 subprocess.run(command, check=True)
 
-print("\n📦 جاري تجهيز ملف الرفع (ZIP) لـ GitHub...")
+# 3. Package as ZIP
+print("\n📦 جاري إنشاء ملف الرفع...")
 dist_dir = "dist"
-exe_path = os.path.join(dist_dir, "Crazy_AI.exe")
-brain_source = "my_own_brain.pth"
-brain_dest = os.path.join(dist_dir, "my_own_brain.pth")
-zip_path = "Crazy_AI_Release.zip"
+exe_path = os.path.join(dist_dir, "HAY-AI-PRO.exe")
+zip_path = "HAY-AI-PRO-Release.zip"
 
-# نسخ العقل إلى مجلد dist ليكون بجانب البرنامج
-if os.path.exists(brain_source):
-    shutil.copy(brain_source, brain_dest)
-
-# ضغط الملفين معاً لسهولة الرفع
-with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
     if os.path.exists(exe_path):
-        zipf.write(exe_path, "Crazy_AI.exe")
-    if os.path.exists(brain_dest):
-        zipf.write(brain_dest, "my_own_brain.pth")
+        zf.write(exe_path, "HAY-AI-PRO.exe")
 
-print(f"\n✅ تم الانتهاء بنجاح! الملف جاهز للرفع: {zip_path}")
-print("🚀 اذهب إلى GitHub وارفع ملف Crazy_AI_Release.zip ليحمله الجميع!")
+print(f"\n✅ تم البناء بنجاح!")
+print(f"📁 EXE: {exe_path}")
+print(f"📦 ZIP: {zip_path}")
+print("🚀 جاهز للرفع إلى GitHub!")

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HAY-AI PRO</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400&family=Noto+Kufi+Arabic:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a2e;--acc:#6c5ce7;--accl:#a29bfe;--grn:#00e676;--txt:#e8e8f0;--txt2:#8888aa;--brd:rgba(108,92,231,.15)}
+body{font-family:'Inter','Noto Kufi Arabic',sans-serif;background:var(--bg);color:var(--txt);height:100vh;display:flex;overflow:hidden}
+.sidebar{width:260px;background:var(--bg2);border-left:1px solid var(--brd);display:flex;flex-direction:column;padding:20px;gap:14px}
+.logo{display:flex;align-items:center;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--brd)}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--acc),#e040fb);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 20px rgba(108,92,231,.3)}
+.logo h1{font-size:17px;background:linear-gradient(135deg,var(--accl),#e040fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo span{font-size:11px;color:var(--txt2)}
+.scard{background:rgba(26,26,46,.6);border:1px solid var(--brd);border-radius:12px;padding:12px;backdrop-filter:blur(10px)}
+.srow{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:3px 0}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:5px}
+.dot.on{background:var(--grn);box-shadow:0 0 8px rgba(0,230,118,.3)}
+.dot.off{background:#ff5252}
+.sidebar select,.sidebar input{width:100%;background:var(--bg3);color:var(--txt);border:1px solid var(--brd);border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;outline:none}
+.sidebar select:focus,.sidebar input:focus{border-color:var(--acc)}
+.sidebar label{font-size:11px;color:var(--txt2);margin-bottom:-8px}
+.btn{padding:9px 14px;border:none;border-radius:8px;font-family:inherit;font-size:13px;cursor:pointer;width:100%;transition:all .2s}
+.btn-p{background:linear-gradient(135deg,var(--acc),#e040fb);color:#fff;box-shadow:0 4px 15px rgba(108,92,231,.3)}
+.btn-p:hover{transform:translateY(-1px)}
+.btn-g{background:transparent;color:var(--txt2);border:1px solid var(--brd)}
+.btn-g:hover{border-color:var(--acc);color:var(--accl)}
+.sfooter{margin-top:auto;font-size:10px;color:#555;text-align:center}
+.main{flex:1;display:flex;flex-direction:column;position:relative}
+.main::before{content:'';position:absolute;top:0;left:0;right:0;height:200px;background:radial-gradient(ellipse at 50% 0%,rgba(108,92,231,.2) 0%,transparent 70%);pointer-events:none}
+.chat{flex:1;overflow-y:auto;padding:24px 36px;display:flex;flex-direction:column;gap:16px;z-index:1}
+.chat::-webkit-scrollbar{width:5px}
+.chat::-webkit-scrollbar-thumb{background:var(--brd);border-radius:3px}
+.welcome{text-align:center;padding:60px 20px 30px;animation:fu .5s ease}
+.welcome h2{font-size:28px;background:linear-gradient(135deg,var(--accl),#e040fb,#ff9100);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.welcome p{color:var(--txt2);font-size:14px;max-width:450px;margin:0 auto}
+.msg{display:flex;gap:10px;max-width:85%;animation:fu .3s ease}
+.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.msg.ai{align-self:flex-start}
+.av{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.msg.user .av{background:linear-gradient(135deg,#00b4d8,#0077b6)}
+.msg.ai .av{background:linear-gradient(135deg,var(--acc),#e040fb);box-shadow:0 2px 10px rgba(108,92,231,.3)}
+.bub{background:rgba(26,26,46,.6);border:1px solid var(--brd);border-radius:14px;padding:12px 16px;font-size:13.5px;line-height:1.7;backdrop-filter:blur(10px);white-space:pre-wrap;word-break:break-word}
+.msg.user .bub{background:rgba(108,92,231,.12);border-color:rgba(108,92,231,.25)}
+.bub code{font-family:'JetBrains Mono',monospace;background:rgba(0,0,0,.3);padding:1px 5px;border-radius:3px;font-size:12.5px}
+.bub pre{background:rgba(0,0,0,.4);border-radius:8px;padding:12px;margin:8px 0;overflow-x:auto;border:1px solid var(--brd)}
+.bub pre code{background:none;padding:0;font-size:12px;line-height:1.5}
+.tbadge{display:inline-flex;align-items:center;gap:5px;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.18);border-radius:16px;padding:3px 10px;font-size:11px;color:var(--grn);margin:3px 3px 3px 0;animation:fu .2s ease}
+.tbadge::before{content:'⚡'}
+.thinking{display:flex;align-items:center;gap:8px;color:var(--txt2);font-size:13px;padding:6px 0}
+.tdots span{width:5px;height:5px;background:var(--accl);border-radius:50%;display:inline-block;animation:bo 1.4s infinite ease-in-out}
+.tdots span:nth-child(2){animation-delay:.16s}
+.tdots span:nth-child(3){animation-delay:.32s}
+.iarea{padding:14px 36px 20px;z-index:1}
+.iwrap{display:flex;gap:8px;background:var(--bg2);border:1px solid var(--brd);border-radius:14px;padding:7px;transition:all .2s}
+.iwrap:focus-within{border-color:var(--acc);box-shadow:0 0 16px rgba(108,92,231,.2)}
+.iwrap textarea{flex:1;background:transparent;border:none;color:var(--txt);font-family:'Inter','Noto Kufi Arabic',sans-serif;font-size:14px;padding:8px 10px;resize:none;outline:none;max-height:120px;min-height:40px;direction:auto}
+.iwrap textarea::placeholder{color:#555}
+.sbtn{width:42px;height:42px;background:linear-gradient(135deg,var(--acc),#e040fb);border:none;border-radius:11px;color:#fff;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;align-self:flex-end}
+.sbtn:hover{transform:scale(1.05);box-shadow:0 4px 12px rgba(108,92,231,.3)}
+.sbtn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bo{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
+@media(max-width:768px){.sidebar{display:none}.chat{padding:14px}.iarea{padding:10px 14px}}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="logo"><div class="logo-icon">🧠</div><div><h1>HAY-AI PRO</h1><span>مساعد البرمجة المحلي</span></div></div>
+  <div class="scard">
+    <div class="srow"><span>Ollama</span><span><span class="dot" id="sDot"></span><span id="sTxt">...</span></span></div>
+    <div class="srow"><span>النموذج</span><span id="mName" style="color:var(--accl)">-</span></div>
+  </div>
+  <label>النموذج</label>
+  <select id="mSel"><option>جاري التحميل...</option></select>
+  <label>مجلد العمل</label>
+  <input type="text" id="wsInput" placeholder="C:\MyProject" dir="ltr">
+  <button class="btn btn-p" onclick="saveSettings()">💾 حفظ</button>
+  <button class="btn btn-g" onclick="clearChat()">🗑️ مسح المحادثة</button>
+  <div class="sfooter">HAY-AI PRO v1.0<br>100% محلي<br>by Youcef 🚀</div>
+</aside>
+<main class="main">
+  <div class="chat" id="chat">
+    <div class="welcome" id="wel"><h2>🧠 HAY-AI PRO</h2><p>مساعد البرمجة الذكي - يعمل محلياً بدون إنترنت</p></div>
+  </div>
+  <div class="iarea">
+    <div class="iwrap">
+      <textarea id="inp" rows="1" placeholder="اكتب رسالتك... (Enter للإرسال)"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}"
+        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+      <button class="sbtn" id="sBtn" onclick="send()">➤</button>
+    </div>
+  </div>
+</main>
+<script>
+let ws,busy=false;
+function conn(){
+  const p=location.protocol==='https:'?'wss':'ws';
+  ws=new WebSocket(`${p}://${location.host}/ws/chat`);
+  ws.onmessage=e=>{
+    const d=JSON.parse(e.data);
+    if(d.type==='tool')addBadge(d.name);
+    else if(d.type==='response'){rmThink();addMsg('ai',d.content);busy=false;sBtn.disabled=false}
+    else if(d.type==='error'){rmThink();addMsg('ai','❌ '+d.content);busy=false;sBtn.disabled=false}
+    else if(d.type==='cleared')showWel();
+  };
+  ws.onclose=()=>setTimeout(conn,2000);
+}
+function send(){
+  const v=inp.value.trim();if(!v||busy)return;
+  const w=document.getElementById('wel');if(w)w.remove();
+  addMsg('user',v);inp.value='';inp.style.height='auto';
+  busy=true;sBtn.disabled=true;showThink();
+  ws.send(JSON.stringify({message:v,workspace:wsInput.value}));
+}
+function addMsg(r,c){
+  const d=document.createElement('div');d.className='msg '+r;
+  const av=r==='ai'?'🧠':'👤';
+  let h=esc(c);
+  h=h.replace(/```(\w*)\n([\s\S]*?)```/g,'<pre><code>$2</code></pre>');
+  h=h.replace(/`([^`]+)`/g,'<code>$1</code>');
+  h=h.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  d.innerHTML=`<div class="av">${av}</div><div class="bub">${h}</div>`;
+  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+}
+function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
+function showThink(){
+  const d=document.createElement('div');d.id='thk';d.className='msg ai';
+  d.innerHTML=`<div class="av" style="background:linear-gradient(135deg,var(--acc),#e040fb)">🧠</div>
+  <div><div class="thinking">يفكر <div class="tdots"><span></span><span></span><span></span></div></div><div id="badges"></div></div>`;
+  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+}
+function rmThink(){const e=document.getElementById('thk');if(e)e.remove()}
+function addBadge(n){const b=document.getElementById('badges');if(!b)return;const s=document.createElement('span');s.className='tbadge';s.textContent=n;b.appendChild(s);chat.scrollTop=chat.scrollHeight}
+function showWel(){chat.innerHTML='<div class="welcome" id="wel"><h2>🧠 HAY-AI PRO</h2><p>مساعد البرمجة الذكي</p></div>'}
+function clearChat(){if(ws&&ws.readyState===1)ws.send(JSON.stringify({action:'clear'}));showWel()}
+async function loadStatus(){
+  try{const r=await fetch('/api/status');const d=await r.json();
+    sDot.className='dot '+(d.ollama_running?'on':'off');
+    sTxt.textContent=d.ollama_running?'متصل':'غير متصل';
+    mName.textContent=d.current_model||'-';
+    if(d.ollama_running&&d.models.length){mSel.innerHTML='';d.models.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;if(m===d.current_model)o.selected=true;mSel.appendChild(o)})}
+    if(d.workspace)wsInput.value=d.workspace;
+  }catch(e){sTxt.textContent='خطأ'}
+}
+async function saveSettings(){
+  await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:mSel.value,workspace:wsInput.value})});
+  loadStatus();
+}
+conn();loadStatus();setInterval(loadStatus,10000);inp.focus();
+</script>
+</body>
+</html>
