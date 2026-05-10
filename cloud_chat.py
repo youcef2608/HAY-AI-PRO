@@ -5,48 +5,60 @@ from pydantic import BaseModel
 import uvicorn
 import httpx
 
-app = FastAPI(title="HAY-AI Cloud")
+app = FastAPI(title="HAY-AI PRO | Premium Cloud")
 
-# واجهة الموقع المتطورة
+# واجهة الموقع الأسطورية (Premium Design + Image Support)
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>HAY-AI PRO | السحابي</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HAY-AI PRO | مساعدك الذكي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #0f0c29; background: linear-gradient(to bottom, #24243e, #302b63, #0f0c29); color: white; height: 100vh; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        #chat-window { width: 90%; max-width: 800px; height: 70vh; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 20px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; box-shadow: 0 8px 32px 0 rgba(0,0,0,0.8); }
-        .msg { margin-bottom: 15px; padding: 10px 15px; border-radius: 15px; max-width: 80%; line-height: 1.6; }
-        .user { background: #6c5ce7; align-self: flex-end; margin-right: auto; }
-        .ai { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
-        .input-area { width: 90%; max-width: 800px; display: flex; gap: 10px; }
-        input { flex: 1; padding: 15px; border-radius: 12px; border: none; background: rgba(255,255,255,0.1); color: white; outline: none; font-size: 16px; border: 1px solid rgba(255,255,255,0.1); }
-        button { padding: 15px 30px; border-radius: 12px; border: none; background: #6c5ce7; color: white; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #a29bfe; transform: translateY(-2px); }
-        h1 { margin-bottom: 10px; font-weight: 300; letter-spacing: 2px; }
+        :root { --primary: #6c5ce7; --bg: #050505; --text: #e0e0e0; }
+        body { font-family: 'Cairo', sans-serif; background: radial-gradient(circle at top right, #1a1a2e, #050505); color: var(--text); margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .container { width: 95%; max-width: 900px; height: 85vh; background: rgba(255,255,255,0.05); backdrop-filter: blur(15px); border-radius: 24px; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); }
+        header { padding: 20px 30px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; }
+        #chat-area { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 15px; }
+        .msg { max-width: 80%; padding: 12px 18px; border-radius: 18px; line-height: 1.6; }
+        .user { align-self: flex-end; background: var(--primary); box-shadow: 0 4px 15px rgba(108,92,231,0.4); }
+        .ai { align-self: flex-start; background: rgba(255,255,255,0.08); }
+        .input-container { padding: 20px 30px; display: flex; gap: 12px; }
+        input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 14px 20px; color: white; outline: none; }
+        button { background: var(--primary); color: white; border: none; border-radius: 14px; padding: 0 25px; cursor: pointer; font-weight: bold; }
+        pre { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; overflow-x: auto; }
     </style>
 </head>
 <body>
-    <h1>HAY-AI PRO 🧠</h1>
-    <div id="chat-window"></div>
-    <div class="input-area">
-        <input type="text" id="userInput" placeholder="اسألني أي شيء..." onkeypress="if(event.key==='Enter') send()">
-        <button onclick="send()">إرسال 🚀</button>
+    <div class="container">
+        <header>
+            <h1>HAY-AI PRO ⚡</h1>
+            <button onclick="copyAPI()" id="copyBtn" style="background:rgba(255,255,255,0.1); color:white; border:none; padding:5px 10px; border-radius:8px; cursor:pointer;">نسخ رابط API 📋</button>
+        </header>
+        <div id="chat-area">
+            <div class="msg ai">أهلاً بك! أنا HAY-AI PRO. اطلب مني كتابة كود أو رسم صورة وسأفعل ذلك فوراً! 🚀</div>
+        </div>
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="اكتب سؤالك هنا..." onkeypress="if(event.key==='Enter') send()">
+            <button onclick="send()">إرسال</button>
+        </div>
     </div>
-
     <script>
-        const chatWindow = document.getElementById('chat-window');
+        const chatArea = document.getElementById('chat-area');
+        function copyAPI() {
+            navigator.clipboard.writeText(window.location.origin + "/v1");
+            document.getElementById('copyBtn').innerText = "تم النسخ! ✅";
+            setTimeout(() => { document.getElementById('copyBtn').innerText = "نسخ رابط API 📋"; }, 2000);
+        }
         async function send() {
             const input = document.getElementById('userInput');
             const text = input.value.trim();
             if(!text) return;
-
             appendMsg('user', text);
             input.value = '';
-
-            const loading = appendMsg('ai', 'جاري التفكير... ⏳');
-            
+            const loading = appendMsg('ai', 'جاري التفكير... ✨');
             try {
                 const res = await fetch('/api/chat', {
                     method: 'POST',
@@ -54,19 +66,21 @@ HTML_TEMPLATE = """
                     body: JSON.stringify({prompt: text})
                 });
                 const data = await res.json();
-                loading.innerHTML = data.reply.replace(/\\n/g, '<br>');
-            } catch (e) {
-                loading.innerHTML = '❌ خطأ في الاتصال بالسيرفر السحابي.';
-            }
-            chatWindow.scrollTop = chatWindow.scrollHeight;
+                loading.innerHTML = formatMsg(data.reply);
+            } catch (e) { loading.innerHTML = '❌ خطأ في الاتصال.'; }
+            chatArea.scrollTop = chatArea.scrollHeight;
         }
-
+        function formatMsg(text) {
+            text = text.replace(/\\!\\[image\\]\\((.*?)\\)/g, '<br><img src="$1" style="width:100%; border-radius:10px;"><br>');
+            text = text.replace(/```([\\s\\S]*?)```/g, '<pre><code>$1</code></pre>');
+            return text.replace(/\\n/g, '<br>');
+        }
         function appendMsg(role, text) {
             const div = document.createElement('div');
             div.className = 'msg ' + role;
             div.innerHTML = text;
-            chatWindow.appendChild(div);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
+            chatArea.appendChild(div);
+            chatArea.scrollTop = chatArea.scrollHeight;
             return div;
         }
     </script>
@@ -83,38 +97,31 @@ class ChatRequest(BaseModel):
 
 @app.post("/api/chat")
 async def chat(req: ChatRequest):
-    # جلب المفتاح من إعدادات السيرفر السحابي
     api_key = os.environ.get("GROQ_API_KEY")
-    
-    if not api_key:
-        return {"reply": "❌ خطأ: مفتاح Groq API غير موجود في إعدادات السيرفر."}
-
     async with httpx.AsyncClient() as client:
         try:
-            # الاتصال بمحرك Groq السحابي (أسرع ذكاء اصطناعي في العالم)
+            system_prompt = "You are HAY-AI PRO, a world-class AI assistant. You can write code and GENERATE IMAGES using markdown: ![image](https://pollinations.ai/p/DESCRIPTION?width=1024&height=1024). Answer in Arabic."
             response = await client.post(
                 "https://api.groq.com/openai/v1/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {api_key}",
-                    "Content-Type": "application/json"
-                },
+                headers={"Authorization": f"Bearer {api_key}"},
                 json={
-                    "model": "llama-3.3-70b-versatile", # أقوى نموذج متاح مجاناً
-                    "messages": [{"role": "user", "content": req.prompt}],
+                    "model": "llama-3.3-70b-versatile",
+                    "messages": [{"role": "system", "content": system_prompt}, {"role": "user", "content": req.prompt}],
                     "temperature": 0.7
                 },
                 timeout=60.0
             )
-            
-            if response.status_code != 200:
-                return {"reply": f"❌ خطأ من Groq: {response.text}"}
-                
             data = response.json()
             return {"reply": data["choices"][0]["message"]["content"]}
-            
-        except Exception as e:
-            return {"reply": f"❌ عذراً، حدث خطأ في الاتصال بالسحاب: {str(e)}"}
+        except Exception as e: return {"reply": f"خطأ: {str(e)}"}
+
+@app.post("/v1/chat/completions")
+async def v1_chat(req: Request):
+    body = await req.json()
+    api_key = os.environ.get("GROQ_API_KEY")
+    async with httpx.AsyncClient() as client:
+        res = await client.post("https://api.groq.com/openai/v1/chat/completions", headers={"Authorization": f"Bearer {api_key}"}, json=body, timeout=60.0)
+        return res.json()
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 7860)))
