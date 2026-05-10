@@ -4,6 +4,10 @@ import os
 import shutil
 import zipfile
 
+# Force UTF-8 output to prevent UnicodeEncodeError on Windows
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
+
 print("🚀 جاري بناء HAY-AI PRO كبرنامج تنفيذي (.exe)...")
 print()
 
